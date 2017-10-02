@@ -1,0 +1,86 @@
+<!doctype html>
+<!--
+ This page is shown when the extension button is clicked, because the
+ "browser_action" field in manifest.json contains the "default_popup" key with
+ value "popup.html".
+ -->
+<html>
+    
+  <head>
+    <title>Getting Started Extension's Popup</title>
+      
+    <script src="/jquery.min.js"></script>
+                    <!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+<!-- Optional theme -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+<!-- Latest compiled and minified JavaScript -->
+<script src="bootstrap.min.js" ></script>
+ <!--<script src="scripts/require.js"></script> -->
+<script src="/bcrypt.js"></script>
+<script src="/socket.io.js"></script>
+
+<script src="/FileSaver.js"></script>
+      <script src="/crypto-js/crypto-js.js"></script>
+    <style>
+      body {
+        font-family: "Segoe UI", "Lucida Grande", Tahoma, sans-serif;
+        font-size: 100%;
+          width: 400px;
+      }
+        #status {
+        /* avoid an excessively wide status text */
+        white-space: pre;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        max-width: 40px;
+      }
+        .box{ 
+           width: 350px;
+                    }
+        
+        dialog {
+  border: 1px solid rgba(0, 0, 0, 0.3);
+  border-radius: 6px;
+  box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
+}
+    </style>
+
+  </head>
+  <body>
+      
+<div class="container box">
+    <dialog id='updateDialog'>
+      <p>Do you Want to update the password for this site ?</p>
+      <button id="yes">Yes</button>
+          <button id="no">No </button>
+    </dialog>
+    
+      <form  >
+           <div id="logpanel">
+            <p>something</p>
+         
+          </div>
+      </form>
+    
+
+<!-- The Modal -->
+<div id="myModal" class="modal">
+
+  <!-- Modal content -->
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <p>Some text in the Modal..</p>
+  </div>
+
+</div>
+
+    </div>
+ 
+      
+  </body> 
+             <script src="main.js"></script>
+</html>
+

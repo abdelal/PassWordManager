@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "cryptr": "^2.0.0"
+  }
+}

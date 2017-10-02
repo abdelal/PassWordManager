@@ -1,0 +1,241 @@
+#!/usr/bin/env node
+
+/**
+ * Module dependencies.
+ */
+
+var app = require('../app');
+var debug = require('debug')('server:server');
+var http = require('http');
+var md5= require('md5');
+var createdb = require('./createdb.js');
+var mysql = require('mysql');
+var con = mysql.createConnection({
+    host: "localhost",
+    user: "Admin",
+    password: "123456",
+    database: "mydb"
+});
+var fs=require('fs');
+sha256=require('sha256');
+var key='156fdk432320lkiutorleq2zxcvmbvre433tyuoirghvxsghx'
+var shortid = require('shortid');
+sha256=require('sha256');
+var jwt = require('jwt-simple');
+var activetokens={}
+var bcrypt = require('bcrypt');
+var randomstring = require("randomstring");
+var stream = fs.createWriteStream("my_file.txt");
+stream.once('open', function(fd) {
+    stream.write("My first row \n");
+    stream.write("My second row \n");
+    stream.end();
+});
+
+var port = normalizePort(process.env.PORT || '3000');
+app.set('port', port);
+
+var server = http.createServer(app);
+var secret="fgkltry89243u2jfrdslnvxczfda";
+server.listen(port);
+server.on('error', onError);
+server.on('listening', onListening);
+
+var io = require('socket.io').listen(server);
+var socketioJwt   = require("socketio-jwt");
+
+
+io.sockets
+    .on('connection', function (socket) {
+        console.log(" socket connected");
+     socket.on('connection',function (data) {
+        console.log(data);
+        socket.username=data.user;
+        username=data.user;
+        socket.password=data.password;
+        password=data.pssword
+        CheckUserNameandPasword(username,password,socket);
+          });
+        socket.on('disconnect',function () {
+            if(socket.username!=undefined){
+                activetokens[username]=undefined;
+            }
+            socket.disconnect();
+            console.log("scoket was disconnected")
+        });
+        socket.on('updatefile',function (data) {
+            if(activetokens[data.username]==data.token){
+                updateFileHash(data.file,data.username)
+        // data={token , content(enc String)}
+        //user was verfied
+            }
+            console.log(data);
+        })
+
+
+   });
+
+
+
+
+
+//we need the file name and the new content
+
+//we will get the file's name update the content of the file , and then change the md5 hash
+
+function updateFileHash(filecontent,username) {
+    filename="";
+    var sql = "SELECT * FROM users WHERE username=\""+usrname+"\"";
+    con.query(sql, function (err, result) {
+        if (err) throw err;
+        if(result[0]!=undefined) {
+           filename=result[0].hash;
+           var options = { flag : 'w' };
+            fs.writeFile("files/"+filename+".txt",filecontent,options,function (err) {
+                md5hash=md5(filecontent);
+                if (err) throw err;
+                console.log('file has been updated');
+                var sql2 = "UPDATE users SET oldhash ="+md5hash +" WHERE username=\""+usrname+"\"";
+             con.query(sql2, function (err, result) {
+                 if (err) throw err;
+                 console.log(result.affectedRows + " record(s) updated");
+            })
+            });
+         //   file=fs.open("files/"+filename+".txt",'w',)
+        }
+        console.log("user was added")
+    });
+
+
+
+}
+
+
+/*
+function update(){
+
+}
+*/
+
+
+
+function RegisterUser(username, hashedpassword,filename,md5 ) {
+    var sql = "INSERT INTO users (username,password,hash,oldhash)\n" +
+        "Values("+"\""+username+"\""+",\""+hashedpassword+"\""+",\""+filename+"\""+",\""+md5+"\");" ;
+     con.query(sql, function (err, result) {
+        if (err) throw err;
+        console.log("user was added")
+    });
+}
+
+
+
+
+function CheckUserNameandPasword(usrname, hashedpassword,socket) {
+    var password,md5hash,filename;
+    var sql = "SELECT * FROM users WHERE username=\""+usrname+"\"";
+     con.query(sql, function (err, result) {
+        if (err) throw err;
+         filename=sha256(username+hashedpassword);
+         if(result[0]==undefined) {
+             var stream = fs.createWriteStream("files/"+filename+".txt");
+
+             stream.close();
+
+            md5hash=md5(stream);
+            RegisterUser(usrname, hashedpassword,filename,md5hash);
+            password=hashedpassword;
+        }
+        else{
+            password=result[0].password;
+            md5hash=result[0].oldhash;
+              }
+        if(hashedpassword == password) {
+            socket.auth=true;
+            salt=randomstring.generate();
+            data={username:usrname,password:hashedpassword,salt:salt}
+            token=jwt.encode(data,secret);
+            activetokens[usrname]=token;
+
+            var contents = fs.readFileSync('files/'+filename+'.txt', 'utf8');
+            socket.emit('sendfile',{file:contents});
+
+            currenthash=md5(contents);
+            wasmodified=0;
+            if(currenthash!=md5hash)
+            wasmodified=1;
+            socket.emit('verified',{state:"ok",token:token,filemodified:wasmodified})
+            activetokens[usrname]=token;
+        }
+        else {
+            socket.emit('verified', {state: "fail"})
+            socket.disconnect();
+        }
+    });
+}
+/*
+
+fname=shortid.generate();
+var stream = fs.createWriteStream(fname+".txt");
+*/
+
+
+
+
+function normalizePort(val) {
+  var port = parseInt(val, 10);
+
+  if (isNaN(port)) {
+    // named pipe
+    return val;
+  }
+
+  if (port >= 0) {
+    // port number
+    return port;
+  }
+  return false;
+}
+
+/**
+ * Event listener for HTTP server "error" event.
+ */
+
+function onError(error) {
+  if (error.syscall !== 'listen') {
+    throw error;
+  }
+
+  var bind = typeof port === 'string'
+    ? 'Pipe ' + port
+    : 'Port ' + port;
+
+  // handle specific listen errors with friendly messages
+  switch (error.code) {
+    case 'EACCES':
+      console.error(bind + ' requires elevated privileges');
+      process.exit(1);
+      break;
+    case 'EADDRINUSE':
+      console.error(bind + ' is already in use');
+      process.exit(1);
+      break;
+    default:
+      throw error;
+  }
+}
+
+
+
+
+/**
+ * Event listener for HTTP server "listening" event.
+ */
+
+function onListening() {
+  var addr = server.address();
+  var bind = typeof addr === 'string'
+    ? 'pipe ' + addr
+    : 'port ' + addr.port;
+  console.log('Listening on ' + bind);
+}

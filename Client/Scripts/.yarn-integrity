@@ -1,0 +1,12 @@
+{
+  "flags": [],
+  "linkedModules": [],
+  "topLevelPatters": [
+    "cryptr@^2.0.0"
+  ],
+  "lockfileEntries": {
+    "cryptr@^2.0.0": "https://registry.yarnpkg.com/cryptr/-/cryptr-2.0.0.tgz#adff600162f4a2b1d98c4e2185dcdda68b0a0a72"
+  },
+  "files": [],
+  "artifacts": {}
+}

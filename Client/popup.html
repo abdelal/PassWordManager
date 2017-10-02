@@ -1,0 +1,96 @@
+<!doctype html>
+<!--
+ This page is shown when the extension button is clicked, because the
+ "browser_action" field in manifest.json contains the "default_popup" key with
+ value "popup.html".
+ -->
+
+<html>
+    
+  <head>
+    <title>Getting Started Extension's Popup</title>
+      
+    <script src="/jquery.min.js"></script>
+                    <!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+<!-- Optional theme -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+<!-- Latest compiled and minified JavaScript -->
+<script src="bootstrap.min.js" ></script>
+ <!--<script src="scripts/require.js"></script> -->
+<script src="/bcrypt.js"></script>
+<script src="/socket.io.js"></script>
+      <script src="/crypto-js/crypto-js.js"></script>
+<script src="/FileSaver.js"></script>
+    <style>
+      body {
+        font-family: "Segoe UI", "Lucida Grande", Tahoma, sans-serif;
+        font-size: 100%;
+          width: 400px;
+      }
+
+      #status {
+        /* avoid an excessively wide status text */
+        white-space: pre;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        max-width: 40px;
+      }
+        .box{ 
+           width: 350px;
+                    }
+        
+              
+        dialog {
+  border: 1px solid rgba(0, 0, 0, 0.3);
+  border-radius: 6px;
+  box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
+}
+    </style>
+
+    <!--
+      - JavaScript and HTML must be in separate files: see our Content Security
+      - Policy documentation[1] for details and explanation.
+      -
+      - [1]: https://developer.chrome.com/extensions/contentSecurityPolicy
+     -->
+
+  </head>
+  <body>
+      
+<!--         <dialog class="dialog model">
+  <p>This is da dialog!</p>
+  <button id="close" class="btn btn-primary ng-scope" ng-click="open()"></button>
+</dialog>-->
+
+            <dialog class="dialog">
+  <div class="alert alert-sucess"> 
+      <strong>PassWord has been saved</strong>
+           </div>
+ </dialog>
+
+      
+<div class="container box">
+
+      <form class="form-signin" >
+        <h2 class="form-signin-heading">Please sign in</h2>
+        <label for="inputEmail" class="sr-only">Email addresaaaaaas</label>
+        <input type="text" id="username" class="form-control" placeholder="Email address" required="" autofocus="">
+          
+        <label for="inputPassword" class="sr-only">Password</label>
+        <input type="password" id="password" class="form-control" placeholder="Password" required="">
+
+        <button class="btn btn-lg btn-primary btn-block" type="submit" id="button">Sign in</button>
+      </form>
+    
+
+
+    </div>
+        <script src="main.js"></script>
+                <script src="popup.js"></script>
+ 
+  </body>
+</html>
+
